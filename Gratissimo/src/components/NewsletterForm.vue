@@ -1,9 +1,8 @@
 <template>
   <form class="newsletter" novalidate @submit.prevent="submit">
-    <label class="visually-hidden" for="newsletter-email">Din email</label>
 
     <div class="newsletter__field">
-      <span class="newsletter__at" aria-hidden="true"></span>
+      <span class="newsletter__at" aria-hidden="true">@</span>
       <input
         id="newsletter-email"
         v-model="email"
@@ -78,10 +77,50 @@ async function submit() {
 .newsletter {
   &__field {
     display: flex;
+    align-items: center;
+    max-width: 20rem;
+    background: var(--color-surface);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+  }
+
+  &__at {
+    padding-left: var(--space-3);
+    color: var(--color-text-faint);
   }
 
   &__input {
+    flex: 1;
     min-width: 0;
+    padding: var(--space-2);
+    border: 0;
+    background: none;
+    color: var(--color-text);
+    &::placeholder {
+      color: var(--color-text-faint);
+    }
+
+    &:focus-visible {
+    outline: none;
+  }
+  }
+  
+  &__button {
+    padding: var(--space-2) var(--space-4);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent-dark);
+    color: var(--color-accent-text);
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.7;
+    }
+  }
+
+  &__message {
+    margin-top: var(--space-3);
+    max-width: 21rem;
   }
 }
 </style>
