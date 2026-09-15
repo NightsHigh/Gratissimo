@@ -82,37 +82,67 @@ const social = [
 
 <style scoped lang="scss">
 .footer {
+  padding: var(--space-7) var(--space-4) var(--space-6);
   background: var(--color-accent);
   color: var(--color-accent-text);
+  font-size: var(--font-size-sm);
 
   a {
     color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
   }
 
   &__inner {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    max-width: var(--width-page);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: var(--space-5);
+    max-width: var(--width-content);
     margin: 0 auto;
-  }
-
-  &__list {
-    list-style: none;
   }
 
   &__col {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    padding: var(--space-5) var(--space-4);
+    gap: var(--space-3);
   }
-  
+
+  &__heading {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__lead,
+  &__address {
+    margin: 0;
+    font-style: normal;
+  }
+
   &__social {
     display: flex;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
     list-style: none;
 
     img {
-      width: 2rem;
+      display: block;
+      width: 3rem;
     }
   }
 }
