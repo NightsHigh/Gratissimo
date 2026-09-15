@@ -29,6 +29,7 @@
         padding: var(--space-2) var(--space-6);
         font-size: var(--font-size-l);
         border: none;
+        cursor: pointer;
     }
 }
 </style>
