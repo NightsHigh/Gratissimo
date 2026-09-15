@@ -27,3 +27,5 @@ export const subscribeNewsletter = (email) =>
     method: 'POST',
     body: JSON.stringify({ email })
   })
+
+export const getTestimonies = () => request('/testimony')

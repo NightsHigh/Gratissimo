@@ -3,7 +3,7 @@
     <label class="visually-hidden" for="newsletter-email">Din email</label>
 
     <div class="newsletter__field">
-      <span class="newsletter__at" aria-hidden="true">@</span>
+      <span class="newsletter__at" aria-hidden="true"></span>
       <input
         id="newsletter-email"
         v-model="email"
@@ -61,7 +61,7 @@ async function submit() {
     message.value = 'Du er nu tilmeldt nyhedsbrevet'
     email.value = ''
   } catch (error) {
-    
+
     // omskriv fejlbesked til dansk fra api'ets engelske fejlbesked
     const alreadySubscribed = error.message === 'Email already exists'
     tone.value = alreadySubscribed ? 'info' : 'error'
