@@ -1,6 +1,6 @@
 <template>
   <Header />
-  
+  <CTA />
   <!-- Show the current page with header and footer above/below that pages content-->
   <RouterView />
 
@@ -10,4 +10,6 @@
 <script setup>
 import SiteFooter from './components/SiteFooter.vue';
 import Header from './components/Header.vue';
+import CTA from './components/CTA.vue';
+
 </script>
