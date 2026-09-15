@@ -29,3 +29,8 @@ export const subscribeNewsletter = (email) =>
   })
 
 export const getTestimonies = () => request('/testimony')
+
+export const getArticles = () => request('/articles')
+
+// Fetch the images on localhost:4000${article.imageUrl} fx localhost:4000/assets/images/article4.jpg
+export const imageUrl = (path) => `${BASE}${path}`
