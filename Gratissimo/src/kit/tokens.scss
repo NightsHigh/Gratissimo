@@ -1,0 +1,43 @@
+:root {
+  --color-accent: #ab0e0e;
+  --color-accent-dark: #8b0808;
+  --color-accent-text: #ffffff;
+  --color-page: #f9f9f9;
+  --color-bg: #ffffff;
+  --color-surface: #f5eeec;
+
+  --color-text: #111111;
+  --color-text-muted: #595959;
+  --color-text-faint: #9e9a98;
+
+  --color-border: #cccccc;
+  --color-border-soft: #d6d0ce;
+  --border: 1px solid var(--color-border);
+
+  --color-info: #4a4a4a;
+  --color-info-bg: #efefef;
+  --color-success: #1f6b45;
+  --color-success-bg: #e7f1ec;
+  --color-error: #8b0808;
+  --color-error-bg: #f7e4e4;
+  --font-body: 'Montserrat', system-ui, sans-serif;
+  --font-display: 'Montserrat Alternates', var(--font-body);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2.5rem;
+
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.5rem;
+  --font-size-xl: 2.25rem;
+  --font-size-2xl: 2.5rem;
+
+  --radius: 8px;
+  --radius-pill: 999px;
+
+  --width-page: 1200px;
+}
