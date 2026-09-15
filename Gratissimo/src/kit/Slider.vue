@@ -4,11 +4,11 @@
 
     <div class="slider__dots">
       <button
-        v-for="(i) in items"
+        v-for="(item, i) in items"
         :key="i"
         class="slider__dot"
         type="button"
-        :aria-label="`Vis nummer ${i + 1} af testimonies`"
+        :aria-label="`Vis nummer ${i + 1} af ${label}`"
         :aria-current="i === index || undefined"
         @click="index = i"
       />
@@ -37,17 +37,28 @@ onUnmounted(() => clearInterval(timer))
 
 <style scoped lang="scss">
 .slider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   &__dots {
     display: flex;
+    gap: var(--space-5);
+    margin-top: var(--space-5);
   }
 
   &__dot {
     width: var(--space-3);
     height: var(--space-3);
+    padding: 0;
+    border: 1px solid var(--color-text-faint);
     border-radius: 50%;
+    background: none;
+    cursor: pointer;
 
     &[aria-current] {
-      background: var(--color-accent);
+      border-color: var(--color-accent-dark);
+      background: var(--color-accent-dark);
     }
   }
 }
