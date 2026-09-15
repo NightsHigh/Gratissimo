@@ -15,6 +15,15 @@
 ## Arbejdsproces
 
 **Kanban med To Do - Priority - Priority - Done - Blocked** 
+Git Flow - Jeg brugte github flow for arbejdsprocess, så Main <- dev <- feature/bugfix for branch 
+Det officielle er
+main → Always production-ready
+develop → Integration branch for features
+feature/* → Feature branches
+release/* → Pre-release branches
+hotfix/* → Urgent production fixes
+
+hvor jeg mest brugte main / dev / feature
 
 
 ## Kodeelementernes oprindelse
