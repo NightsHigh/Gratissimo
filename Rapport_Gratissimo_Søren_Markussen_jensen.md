@@ -27,6 +27,7 @@ hvor jeg mest brugte main / dev / feature
 
 
 ## Kodeelementernes oprindelse
+regex snippets: https://regex-snippets.com
 
 
 ## Særlige punkter
