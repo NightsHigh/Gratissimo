@@ -7,7 +7,6 @@
     <form @submit.prevent="submit">
       <div class="search__field">
         <img class="search__icon" :src="searchIcon" alt="" aria-hidden="true">
-        <label class="visually-hidden" for="q">Søgeord</label>
         <input id="q" v-model="form.q" type="search" placeholder="Eks. cafémedhjælper...">
         <Button type="submit">Søg</Button>
       </div>

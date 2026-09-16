@@ -141,3 +141,11 @@ export const getWorkTypes = () => request('/workTypes')
 
 export const subscribeNewsletter = (email) =>
   request('/newsletter', { method: 'POST', body: { email } })
+
+export const getFavorites = () => request('/favorites', { needsLogin: true })
+
+export const createFavorite = (jobListingId) =>
+  request('/favorites', { method: 'POST', body: { jobListingId }, needsLogin: true })
+
+export const deleteFavorite = (favoriteId) =>
+  request(`/favorites/${favoriteId}`, { method: 'DELETE', needsLogin: true })
