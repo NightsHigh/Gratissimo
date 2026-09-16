@@ -68,7 +68,7 @@ const error = ref('')
 const pending = ref(false)
 
 const EMAIL_REGEX = /^^(?!\.)(?!.*\.\.)(?!.*\.@)[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?!-)[a-zA-Z0-9-]+(?<!-)(?:\.[a-zA-Z0-9-]+(?<!-))*\.[a-zA-Z]{2,}$/
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-\[\]\\\/+=~';])[A-Za-z\d!@#$%^&*(),.?":{}|<>_\-\[\]\\\/+=~';]{8,64}$/
+const PASSWORD_REGEX = /^[A-Za-z\d!@#$%^&*(),.?":{}|<>_\-\[\]\\\/+=~';]{8,64}$/
 const PHONE_REGEX = /^\+?[1-9]\d{1,14}$/
 const ZIPCODE_REGEX = /^\d{4}(?:-\d{4})?$/
 const NAME_REGEX = /^.{2,32}$/
@@ -84,14 +84,15 @@ const form = reactive({
 
 function validate() {
   switch (true) {
-
+    case (!isSignup.value):
+      return ''
+      
     case !EMAIL_REGEX.test(form.email):
       return 'Skriv en gyldig email.'
 
     case !PASSWORD_REGEX.test(form.password):
       return `
-      Password skal være mindst 8 tegn og maks 64 tegn uden mellemrum.
-      Det skal indeholde mindst /1 lille bogstav / 1 stort bogstav / et tal / et special tegn fx ! @ # `
+      Password skal være mindst 8 tegn og maks 64 tegn uden mellemrum.`
 
     case form.password !== form.repeatPassword:
       return 'De to passwords er ikke ens.'
