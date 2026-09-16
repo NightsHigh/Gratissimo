@@ -6,7 +6,19 @@ import { AppError } from "../utils/AppError";
 export class JobListingController {
   getAllJobListings = async (req: Request, res: Response) => {
     const items = await prisma.jobListing.findMany({
-      include: { region: true, workType: true, jobCategory: true },
+      include: { region: true, workType: true, jobCategory: true, user: {
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+          email: true,
+          phone: true,
+          address: true,
+          city: true,
+          zipcode: true
+        }
+      } },
+
     });
     res.status(200).json(items);
   };
