@@ -20,9 +20,13 @@
             <h4 v-if="isOpen(job)">Beskrivelse</h4>
             <p>{{ job.description }}</p>
 
+            <h4 v-if="isOpen(job)">Erfaring</h4>
+            <p v-if="isOpen(job)">{{ placeholder_Text }}</p>
+
+            <h4 v-if="isOpen(job)">Arbejdsopgaver</h4>
+            <p v-if="isOpen(job)">{{ placeholder_Text }}</p>
+            
             <template v-if="isOpen(job)">
-              <h4>Adresse</h4>
-              <p>{{ job.address }}, {{ job.zipcode }} {{ job.city }}</p>
             </template>
           </div>
 
@@ -38,6 +42,7 @@
               <h4 class="job__contact">Kontakt</h4>
               <div class="job__combine">
                 <p>{{ job.organization }}</p>
+                <p>{{ job.address }}, {{ job.zipcode }} {{ job.city }}</p>
                 <p>Tlf: {{ job.user?.phone }}</p>
                 <p>Email: {{ job.user?.email }}</p>
               </div>
@@ -80,6 +85,11 @@ import { isLoggedIn } from '@/auth'
 import emptyHeart from '@/assets/icons/icons8-favorite-50.png'
 import filledHeart from '@/assets/icons/icons8-favorite-filled-50.png'
 
+const placeholder_Text = `
+Lorem ipsum, Lorem ipsum Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem 
+ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum
+ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum
+`
 const PER_PAGE = 5
 
 const route = useRoute()
@@ -228,14 +238,22 @@ onMounted(async () => {
   &__actions button{
     background-color: var(--color-surface);
     color: var(--color-text);
+    padding: var(--space-2) var(--space-4)
   }
 
     &__actions button:nth-of-type(2){
-    margin-left: var(--space-4)
+    margin-left: var(--space-4);
+    padding: var(--space-2) var(--space-5)
   }
 
   &__actions img{
   width: var(--space-4)
 }
+}
+@media (max-width: 700px) {
+  .job{
+    width: 90vw;
+    margin: auto
+  }
 }
 </style>
