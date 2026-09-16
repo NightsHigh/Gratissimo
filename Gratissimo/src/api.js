@@ -36,7 +36,7 @@ async function readBody(response) {
 }
 
 async function request(path, options = {}) {
-  const method = options.method || 'GET'
+  const method = options.method
   const body = options.body
   const needsLogin = options.needsLogin || false
   const settings = { method, headers: {} }
