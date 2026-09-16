@@ -34,9 +34,6 @@ regex snippets: https://regex-snippets.com
 Postman hævder at zipcode er optional men i API'et er det ikke, så vi skulle lave en extra input til register form
 da at zipcode/post nummer er required af API'en. 
 
-I postman er http://localhost:4000/api/auth/login linket til at logge ind med
-men det rigtige link er http://localhost:4000/api/login
-
 ## Vurdering af egen indsats
 
 **Med mere tid:** 
