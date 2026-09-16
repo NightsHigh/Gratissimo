@@ -4,6 +4,7 @@
       <Search />
     </div>
 
+    <AlertMessage v-if="message" :tone="messageTone">{{ message }}</AlertMessage>
     <AlertMessage v-if="error" tone="error">{{ error }}</AlertMessage>
     <p v-else-if="loading">Henter jobs...</p>
     <p v-else-if="!matches.length">Ingen jobs matcher din søgning.</p>
@@ -14,14 +15,52 @@
           <div>
             <p class="job__org">{{ job.organization }}</p>
             <h3 class="job__title">{{ job.title }}</h3>
+            <p v-if="isOpen(job)" class="job__category">{{ job.jobCategory?.name }}</p>
+
+            <h4 v-if="isOpen(job)">Beskrivelse</h4>
             <p>{{ job.description }}</p>
+
+            <template v-if="isOpen(job)">
+              <h4>Adresse</h4>
+              <p>{{ job.address }}, {{ job.zipcode }} {{ job.city }}</p>
+            </template>
           </div>
 
           <div class="job__side">
             <p>Lokation: <strong>{{ job.city }}</strong></p>
             <p>Indrykket: <strong>{{ shortDate(job.createdAt) }}</strong></p>
-            <p>Arbejdstid: <strong>{{ job.workType?.type }}</strong></p>
-            <p>Hjemmearbejde: <strong>{{ job.workHome }}</strong></p>
+
+            <template v-if="isOpen(job)">
+              <p>Arbejdstid: <strong>{{ job.workType?.type }}</strong></p>
+              <p>Hjemmearbejde: <strong>{{ job.workHome }}</strong></p>
+              <p>Region: <strong>{{ job.region?.name }}</strong></p>
+
+              <h4 class="job__contact">Kontakt</h4>
+              <div class="job__combine">
+                <p>{{ job.organization }}</p>
+                <p>Tlf: {{ job.user?.phone }}</p>
+                <p>Email: {{ job.user?.email }}</p>
+              </div>
+
+              <p>Att: {{ job.user?.firstname }} {{ job.user?.lastname }}</p>
+            </template>
+
+            <p class="job__actions">
+              <Button @click="toggleFavorite(job)">
+                <template v-if="isFavorited(job)">
+                  Fjern
+                  <img :src="filledHeart" alt="Et rødt hjerte" class="jobs__hearts" />
+                </template>
+
+                <template v-else>
+                  Gem
+                  <img :src="emptyHeart" alt="Et tomt hjerte" class="jobs__hearts" />
+                </template>
+              </Button>
+
+              <Button class="job__buttons" v-if="isOpen(job)" @click="close">Luk</Button>
+              <Button v-else @click="open(job)">Åben</Button>
+            </p>
           </div>
         </article>
       </li>
@@ -35,8 +74,11 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Search from '@/components/Search.vue'
-import { AlertMessage, Pagination } from '@/kit'
-import { getJobListings } from '@/api'
+import { AlertMessage, Button, Pagination } from '@/kit'
+import { createFavorite, deleteFavorite, getFavorites, getJobListings } from '@/api'
+import { isLoggedIn } from '@/auth'
+import emptyHeart from '@/assets/icons/icons8-favorite-50.png'
+import filledHeart from '@/assets/icons/icons8-favorite-filled-50.png'
 
 const PER_PAGE = 5
 
@@ -44,8 +86,11 @@ const route = useRoute()
 const router = useRouter()
 
 const jobs = ref([])
+const favorites = ref([])
 const loading = ref(true)
 const error = ref('')
+const message = ref('')
+const messageTone = ref('info')
 
 const shortDate = (value) => {
   const date = new Date(value)
@@ -87,14 +132,45 @@ const pageItems = computed(() => {
   return matches.value.slice(start, start + PER_PAGE)
 })
 
-function goToPage(next) {
-  if (next < 1 || next > pageCount.value) return
-  router.push({ query: { ...route.query, side: next } })
+const favoriteFor = (job) => favorites.value.find((item) => item.jobListingId === job.id)
+const isFavorited = (job) => Boolean(favoriteFor(job))
+
+async function toggleFavorite(job) {
+  if (!isLoggedIn.value) {
+    messageTone.value = 'info'
+    message.value = 'Du skal være logget ind for at gemme et job.'
+    return
+  }
+
+  try {
+    const existing = favoriteFor(job)
+
+    if (existing) {
+      await deleteFavorite(existing.id)
+      favorites.value = favorites.value.filter((item) => item.id !== existing.id)
+      message.value = ''
+    } else {
+      favorites.value.push(await createFavorite(job.id))
+      messageTone.value = 'success'
+      message.value = `"${job.title}" er gemt under dine favoritter.`
+    }
+  } catch (err) {
+    messageTone.value = 'error'
+    message.value = err.message
+  }
 }
+
+
+const openId = ref(null)
+const isOpen = (job) => openId.value === job.id
+const open = (job) => (openId.value = job.id)
+const close = () => (openId.value = null)
+const goToPage = (next) => router.push({ query: { ...route.query, side: next } })
 
 onMounted(async () => {
   try {
     jobs.value = await getJobListings()
+    if (isLoggedIn.value) favorites.value = await getFavorites()
   } catch (err) {
     error.value = err.message
   } finally {
@@ -144,5 +220,22 @@ onMounted(async () => {
     flex-shrink: 0;
     font-size: var(--font-size-sm);
   }
+
+  &__combine p{
+    margin: 0;
+  }
+
+  &__actions button{
+    background-color: var(--color-surface);
+    color: var(--color-text);
+  }
+
+    &__actions button:nth-of-type(2){
+    margin-left: var(--space-4)
+  }
+
+  &__actions img{
+  width: var(--space-4)
+}
 }
 </style>
