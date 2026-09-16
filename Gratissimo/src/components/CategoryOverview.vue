@@ -2,96 +2,79 @@
   <section class="category-overview" aria-label="Kategorier af jobs">
     <h2 class="category-overview__title">Find job ved kategori</h2>
 
+    <AlertMessage v-if="error" tone="error">{{ error }}</AlertMessage>
+
     <div class="category-overview__grid">
-      <button
+      <RouterLink
         v-for="category in categories"
-        :key="category.name"
-        type="button"
+        :key="category.id"
         class="category-overview__item"
-        @click="goToCategory(category.name)"
+        :to="{ path: '/jobs', query: { kategori: category.id } }"
       >
         <span class="category-overview__name">{{ category.name }}</span>
         <span class="category-overview__count">{{ category.count }}</span>
-      </button>
+      </RouterLink>
     </div>
   </section>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { AlertMessage } from '@/kit'
+import { getJobCategories, getJobListings } from '@/api'
 
-const router = useRouter()
+const categories = ref([])
+const error = ref('')
 
-const defaultCategories = [
-  { name: 'Undervisning', count: 42 },
-  { name: 'Håndværk', count: 24 },
-  { name: 'Kommunikation', count: 81 },
-  { name: 'Teknologi', count: 23 },
-  { name: 'Industri', count: 19 },
-  { name: 'Kontor', count: 42 },
-  { name: 'Kultur', count: 84 },
-  { name: 'Service', count: 64 },
-  { name: 'Øvrige', count: 14 }
-]
+onMounted(async () => {
+  try {
+    const [list, jobs] = await Promise.all([getJobCategories(), getJobListings()])
 
-const categories = computed(() => defaultCategories)
-
-const goToCategory = (name) => {
-  router.push({
-    path: '/jobs',
-    query: { category: name }
-  })
-}
+    categories.value = list.map((category) => ({
+      ...category,
+      count: jobs.filter((job) => job.jobCategoryId === category.id).length
+    }))
+  } catch (err) {
+    error.value = err.message
+  }
+})
 </script>
 
 <style scoped lang="scss">
 .category-overview {
   width: var(--width-content-wide);
   margin: 0 auto;
-  padding: 3rem 0rem;
+  padding: var(--space-2) 0rem;
   background: transparent;
 
   &__title {
-    margin: 0 0 1rem;
-    font-size: clamp(1.5rem, 1.2vw + 1rem, 2.1rem);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-6);
+    font-size: var(--font-size-lg);
     font-weight: 400;
     color: var(--color-text);
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(170px, 1fr));
-    gap: 3rem;
+    grid-template-columns: repeat(3, minmax(140px, 1fr));
+    gap: var(--space-4);
   }
 
   &__item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
     width: 100%;
-    min-height: 3.5rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid #d7d0ce;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.75);
+    min-height: var(--space-8);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-text-faint);
+    border-radius: var(--space-3);
+    background: var(--color-bg);
     color: var(--color-text);
-    font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-    }
-  }
-
-  &__name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    text-decoration: none;
   }
 
   &__count {
@@ -104,9 +87,12 @@ const goToCategory = (name) => {
 
 @media (max-width: 700px) {
   .category-overview {
-    &__grid {
-      grid-template-columns: repeat(2, minmax(140px, 1fr));
-    }
+&__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(170px, 1fr));
+  gap: var(--space-4);
+  width: var(--space-4)
+}
   }
 }
 </style>
