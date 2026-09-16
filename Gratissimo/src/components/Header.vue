@@ -1,6 +1,6 @@
 <template>
     <header class="header">
-        <a href="/">
+        <a href="/" >
             <img src="@/assets/logo/logo-white.png" alt="Logo" class="header__logo">
         </a>
     </header>

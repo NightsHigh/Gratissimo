@@ -1,5 +1,5 @@
 <template>
-    <section class="cta">
+    <section v-if="!isLoggedIn"  class="cta">
         <p>Vi hjælper dig på vej til dit næste frivillige job</p>
     <a href="/login">
         <button class="cta__button">Log in eller opret dig</button>
@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-
+import { isLoggedIn } from '@/auth'
 
 </script>
 
