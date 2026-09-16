@@ -4,17 +4,23 @@
 
     <ul class="navbar__actions">
       <li>
-        <RouterLink to="/opret-profil" class="navbar__button navbar__opret-profil">
-          Opret profil
+        <RouterLink
+          :to="isLoggedIn ? '/min-side' : '/opret-profil'"
+          class="navbar__button navbar__opret-profil"
+        >
+          {{ isLoggedIn ? 'Min side' : 'Opret profil' }}
         </RouterLink>
       </li>
 
       <span class="navbar__divider"></span>
 
       <li>
-        <RouterLink to="/log-ind" class="navbar__button navbar__Login">
+        <RouterLink v-if="!isLoggedIn" to="/log-ind" class="navbar__button navbar__Login">
           Log ind
         </RouterLink>
+        <button v-else type="button" class="navbar__button navbar__Login" @click="handleSignOut">
+          Log ud
+        </button>
       </li>
     </ul>
   </nav>
@@ -22,7 +28,15 @@
 
 <script setup>
 import { TabNav } from '@/kit'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import { isLoggedIn, signOut } from '@/auth'
+
+const router = useRouter()
+
+async function handleSignOut() {
+  await signOut()
+  router.push('/log-ind')
+}
 
 const navbarItems = [
   { label: 'Alle Jobs', to: '/jobs' },
@@ -57,6 +71,9 @@ const navbarItems = [
 
   &__button {
     display: inline-block;
+    background: none;
+    font: inherit;
+    cursor: pointer;
     padding: 0.5rem 1rem;
     border-radius: 999px;
     color: var(--color-bg);

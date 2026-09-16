@@ -34,7 +34,7 @@ const tone = ref('info')
 const pending = ref(false)
 
 // Validate email for obvious mistakes
-const EmailRegex = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+const EmailRegex = (value) => /^(?!\.)(?!.*\.\.)(?!.*\.@)[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?!-)[a-zA-Z0-9-]+(?<!-)(?:\.[a-zA-Z0-9-]+(?<!-))*\.[a-zA-Z]{2,}$/.test(value)
 
 async function submit() {
   const value = email.value.trim()

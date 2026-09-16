@@ -58,7 +58,7 @@ onMounted(async () => {
   }
 
   h2 {
-    max-width: var(--width-content);
+    max-width: var(--width-content-wide);
     margin: 0 auto var(--space-5);
     font-size: var(--font-size-lg);
     font-weight: 400;
@@ -67,8 +67,8 @@ onMounted(async () => {
   &__list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
-    max-width: var(--width-content);
+    gap: var(--space-8);
+    max-width: var(--width-content-wide);
     margin: 0 auto;
     padding: 0;
     list-style: none;
