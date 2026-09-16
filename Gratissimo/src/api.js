@@ -39,7 +39,6 @@ async function request(path, options = {}) {
   const method = options.method || 'GET'
   const body = options.body
   const needsLogin = options.needsLogin || false
-
   const settings = { method, headers: {} }
 
   if (body) {
@@ -96,6 +95,9 @@ let session
     throw error
   }
 
+  
+  // Save the token in format: 
+  // ('Token_name_in_cookies', 'token we get from api after login', lifetime_for_the_token_in_seconds)
   saveCookie(ACCESS_TOKEN, session.accessToken, ACCESS_LIFETIME_IN_SECONDS)
   saveCookie(REFRESH_TOKEN, session.refreshToken, REFRESH_LIFETIME_IN_SECONDS)
 
@@ -106,25 +108,24 @@ export async function logout() {
   const refreshToken = readCookie(REFRESH_TOKEN)
 
   try {
-    // The API deletes the refresh token on its side, but we log out locally either way.
     if (refreshToken) await request('/logout', { method: 'POST', body: { refreshToken } })
   } catch {
-    // Ignored on purpose.
   }
 
   forgetCookie(ACCESS_TOKEN)
   forgetCookie(REFRESH_TOKEN)
 }
 
+// Get the array of users from the api and access the 1st objest (also the only 1 kekw) 
+// To access the information of the user. 
 export async function verifySession() {
   const users = await request('/users', { needsLogin: true })
 
-  // The API answers with an array holding the one user the token belongs to.
   return users[0]
 }
 
-// Send exactly the fields the User model has. Extra fields make Prisma fail.
-export const createUser = (user) => request('/users', { method: 'POST', body: user })
+export const createUser = (user) => 
+  request('/users', { method: 'POST', body: user })
 
 export const updateUser = (user) =>
   request('/users', { method: 'PATCH', body: user, needsLogin: true })
@@ -136,7 +137,7 @@ export const getJobListings = () => request('/job-listings')
 
 export const getRegions = () => request('/regions')
 export const getJobCategories = () => request('/job-categories')
-export const getWorkTypes = () => request('/workTypes') // camelCase, unlike the others
+export const getWorkTypes = () => request('/workTypes')
 
 export const subscribeNewsletter = (email) =>
   request('/newsletter', { method: 'POST', body: { email } })
