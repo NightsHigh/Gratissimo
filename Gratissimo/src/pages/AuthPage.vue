@@ -16,15 +16,77 @@
       <AlertMessage v-if="error" tone="error">{{ error }}</AlertMessage>
 
       <form novalidate @submit.prevent="submit">
-        <p v-for="field in fields" :key="field.name" class="auth__field">
-          <label :for="field.name">{{ field.label }}</label>
+        <p class="auth__field">
+          <label for="email">Email</label>
           <input
-            :id="field.name"
-            v-model="form[field.name]"
-            :type="field.type"
-            :placeholder="field.placeholder"
+            id="email"
+            v-model="email"
+            type="email"
+            placeholder="Skriv din email..."
           >
         </p>
+
+        <p class="auth__field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            placeholder="Skriv dit password..."
+          >
+        </p>
+
+        <template v-if="isSignup">
+          <p class="auth__field">
+            <label for="repeatPassword">Gentag password</label>
+            <input
+              id="repeatPassword"
+              v-model="repeatPassword"
+              type="password"
+              placeholder="Skriv dit password..."
+            >
+          </p>
+
+          <p class="auth__field">
+            <label for="firstname">Fornavn</label>
+            <input
+              id="firstname"
+              v-model="firstname"
+              type="text"
+              placeholder="Skriv dit fornavn..."
+            >
+          </p>
+
+          <p class="auth__field">
+            <label for="lastname">Efternavn</label>
+            <input
+              id="lastname"
+              v-model="lastname"
+              type="text"
+              placeholder="Skriv dit efternavn..."
+            >
+          </p>
+
+          <p class="auth__field">
+            <label for="phone">Telefon nummer</label>
+            <input
+              id="phone"
+              v-model="phone"
+              type="tel"
+              placeholder="Skriv dit telefon nummer..."
+            >
+          </p>
+
+          <p class="auth__field">
+            <label for="zipcode">Post nummer</label>
+            <input
+              id="zipcode"
+              v-model="zipcode"
+              type="number"
+              placeholder="Skriv dit post nummer..."
+            >
+          </p>
+        </template>
 
         <Button type="submit" :disabled="pending">
           {{ isSignup ? 'Opret profil' : 'Log ind' }}
@@ -39,7 +101,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AlertMessage, Button } from '@/kit'
 import { signIn, signUp } from '@/auth'
@@ -49,21 +111,14 @@ const router = useRouter()
 
 const isSignup = computed(() => route.path === '/opret-profil')
 
-const LOGIN_FIELDS = [
-  { name: 'email', label: 'Email', type: 'email', placeholder: 'Skriv din email...' },
-  { name: 'password', label: 'Password', type: 'password', placeholder: 'Skriv dit password...' }
-]
+const email = ref('')
+const password = ref('')
+const repeatPassword = ref('')
+const firstname = ref('')
+const lastname = ref('')
+const phone = ref('')
+const zipcode = ref('')
 
-const SIGNUP_FIELDS = [
-  ...LOGIN_FIELDS,
-  { name: 'repeatPassword', label: 'Gentag password', type: 'password', placeholder: 'Skriv dit password...' },
-  { name: 'firstname', label: 'Fornavn', type: 'text', placeholder: 'Skriv dit fornavn...' },
-  { name: 'lastname', label: 'Efternavn', type: 'text', placeholder: 'Skriv dit efternavn...' },
-  { name: 'phone', label: 'Telefon nummer', type: 'tel', placeholder: 'Skriv dit telefon nummer...' },
-  { name: 'zipcode', label: 'Post nummer', type: 'number', placeholder: 'Skriv dit post nummer...' }
-]
-
-const fields = computed(() => (isSignup.value ? SIGNUP_FIELDS : LOGIN_FIELDS))
 const error = ref('')
 const pending = ref(false)
 
@@ -72,72 +127,69 @@ const PASSWORD_REGEX = /^[A-Za-z\d!@#$%^&*(),.?":{}|<>_\-\[\]\\\/+=~';]{8,64}$/
 const PHONE_REGEX = /^\+?[1-9]\d{1,14}$/
 const ZIPCODE_REGEX = /^\d{4}(?:-\d{4})?$/
 const NAME_REGEX = /^.{2,32}$/
-const form = reactive({
-  email: '',
-  password: '',
-  repeatPassword: '',
-  firstname: '',
-  lastname: '',
-  phone: '',
-  zipcode: ''
-})
 
 function validate() {
   switch (true) {
-    case (!isSignup.value):
+    case !isSignup.value:
       return ''
-      
-    case !EMAIL_REGEX.test(form.email):
+
+    case !EMAIL_REGEX.test(email.value):
       return 'Skriv en gyldig email.'
 
-    case !PASSWORD_REGEX.test(form.password):
-      return `
-      Password skal være mindst 8 tegn og maks 64 tegn uden mellemrum.`
+    case !PASSWORD_REGEX.test(password.value):
+      return 'Password skal være mindst 8 tegn og maks 64 tegn uden mellemrum.'
 
-    case form.password !== form.repeatPassword:
+    case password.value !== repeatPassword.value:
       return 'De to passwords er ikke ens.'
 
-    case !NAME_REGEX.test(form.firstname):
+    case !NAME_REGEX.test(firstname.value):
       return 'Skriv dit fornavn.'
 
-    case !NAME_REGEX.test(form.lastname):
+    case !NAME_REGEX.test(lastname.value):
       return 'Skriv dit efternavn.'
 
-    case !PHONE_REGEX.test(form.phone):
-      return 'Skriv dit telefonnummer på 8 cifre.'
+    case !PHONE_REGEX.test(phone.value):
+      return 'Skriv dit telefonnummer.'
 
-    case !ZIPCODE_REGEX.test(form.zipcode):
-      return 'Skriv et gyldigt post nummer på 4 cifre'
+    case !ZIPCODE_REGEX.test(zipcode.value):
+      return 'Skriv et gyldigt postnummer på 4 cifre.'
 
     default:
       return ''
   }
 }
 
-
-
 async function submit() {
   error.value = validate()
+
   if (error.value) return
 
   pending.value = true
 
   try {
     if (isSignup.value) {
-      const { repeatPassword, ...user } = form
-      await signUp(user)
+      await signUp({
+        email: email.value,
+        password: password.value,
+        firstname: firstname.value,
+        lastname: lastname.value,
+        phone: phone.value,
+        zipcode: zipcode.value
+      })
     } else {
-      await signIn(form.email, form.password)
+      await signIn(email.value, password.value)
     }
-
+// Add error catching on the vue router smtomhrhrhrehjtrjntrnjfrtjftjfd
     router.push('/min-side')
-  } catch (error) {
-    error.value = error.message
+  } catch (err) {
+    error.value = err.message
   } finally {
     pending.value = false
   }
 }
 </script>
+
+
 
 <style scoped lang="scss">
 .auth {

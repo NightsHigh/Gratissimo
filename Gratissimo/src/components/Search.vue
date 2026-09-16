@@ -7,50 +7,59 @@
     <form @submit.prevent="submit">
       <div class="search__field">
         <img class="search__icon" :src="searchIcon" alt="" aria-hidden="true">
-        <input id="q" v-model="form.q" type="search" placeholder="Eks. cafémedhjælper...">
+        <input
+          id="q"
+          v-model="q"
+          type="search"
+          placeholder="Eks. cafémedhjælper..."
+        >
         <Button type="submit">Søg</Button>
       </div>
 
       <div class="search__filters">
-        <span>Filtrer:</span>
+        <div>
 
-        <select v-model="form.region" aria-label="Region">
-          <option value="">Region</option>
-          <option v-for="item in regions" :key="item.id" :value="item.id">{{ item.name }}</option>
-        </select>
+          <span>Filtrer:</span>
+  
+          <select v-model="region" aria-label="Region">
+            <option value="">Region</option>
+            <option v-for="item in regions" :key="item.id" :value="item.id">{{ item.name }}</option>
+          </select>
+  
+          <select v-model="kategori" aria-label="Kategori">
+            <option value="">Kategorier</option>
+            <option v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</option>
+          </select>
+  
+          <select v-model="arbejdstid" aria-label="Arbejdstid">
+            <option value="">Arbejdstid</option>
+            <option v-for="item in workTypes" :key="item.id" :value="item.id">{{ item.type }}</option>
+          </select>
+  
+          <select v-model="periode" aria-label="Periode">
+            <option value="">Periode</option>
+            <option value="uge">Seneste uge</option>
+            <option value="maaned">Seneste måned</option>
+            <option value="aar">Seneste år</option>
+          </select>
+  
+          <select v-model="hjemmearbejde" aria-label="Hjemmearbejde">
+            <option value="">Hjemmearbejde</option>
+            <option value="On-site">On-site</option>
+            <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
 
-        <select v-model="form.kategori" aria-label="Kategori">
-          <option value="">Kategorier</option>
-          <option v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</option>
-        </select>
+           <button class="search__reset" type="button" @click=reset()>Nulstil</button>
+        </div>
 
-        <select v-model="form.arbejdstid" aria-label="Arbejdstid">
-          <option value="">Arbejdstid</option>
-          <option v-for="item in workTypes" :key="item.id" :value="item.id">{{ item.type }}</option>
-        </select>
-
-        <select v-model="form.periode" aria-label="Periode">
-          <option value="">Periode</option>
-          <option value="uge">Seneste uge</option>
-          <option value="maaned">Seneste måned</option>
-          <option value="aar">Seneste år</option>
-        </select>
-
-        <select v-model="form.hjemmearbejde" aria-label="Hjemmearbejde">
-          <option value="">Hjemmearbejde</option>
-          <option value="On-site">On-site</option>
-          <option value="Remote">Remote</option>
-          <option value="Hybrid">Hybrid</option>
-        </select>
-
-        <button class="search__reset" type="button" @click="router.push('/jobs')">Nulstil</button>
       </div>
     </form>
   </section>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AlertMessage, Button } from '@/kit'
 import { getRegions, getJobCategories, getWorkTypes } from '@/api'
@@ -59,29 +68,52 @@ import searchIcon from '@/assets/icons/icons8-search-50.png'
 const route = useRoute()
 const router = useRouter()
 
-const form = reactive({ q: '', region: '', kategori: '', arbejdstid: '', periode: '', hjemmearbejde: '' })
+const q = ref('')
+const region = ref('')
+const kategori = ref('')
+const arbejdstid = ref('')
+const periode = ref('')
+const hjemmearbejde = ref('')
 
 const regions = ref([])
 const categories = ref([])
 const workTypes = ref([])
 const error = ref('')
 
-watch(
-  () => route.query,
-  (query) => {
-    form.q = query.q ?? ''
-    form.region = query.region ?? ''
-    form.kategori = query.kategori ?? ''
-    form.arbejdstid = query.arbejdstid ?? ''
-    form.periode = query.periode ?? ''
-    form.hjemmearbejde = query.hjemmearbejde ?? ''
-  },
-  { immediate: true }
-)
+onMounted(() => {
+  q.value = route.query.q ?? ''
+  region.value = route.query.region ?? ''
+  kategori.value = route.query.kategori ?? ''
+  arbejdstid.value = route.query.arbejdstid ?? ''
+  periode.value = route.query.periode ?? ''
+  hjemmearbejde.value = route.query.hjemmearbejde ?? ''
+})
+
+function reset() {
+  q.value = ''
+  region.value = ''
+  kategori.value = ''
+  arbejdstid.value = ''
+  periode.value = ''
+  hjemmearbejde.value = ''
+
+  router.push('/jobs')
+}
 
 function submit() {
-  const query = Object.fromEntries(Object.entries(form).filter(([, value]) => value !== ''))
-  router.push({ path: '/jobs', query })
+  const query = {}
+
+  if (q.value) query.q = q.value
+  if (region.value) query.region = region.value
+  if (kategori.value) query.kategori = kategori.value
+  if (arbejdstid.value) query.arbejdstid = arbejdstid.value
+  if (periode.value) query.periode = periode.value
+  if (hjemmearbejde.value) query.hjemmearbejde = hjemmearbejde.value
+
+  router.push({
+    path: '/jobs',
+    query
+  })
 }
 
 onMounted(async () => {
@@ -96,6 +128,7 @@ onMounted(async () => {
   }
 })
 </script>
+
 
 <style scoped lang="scss">
 .search {
@@ -115,11 +148,6 @@ onMounted(async () => {
     background: var(--color-bg);
     border-radius: var(--radius-pill);
     overflow: hidden;
-
-    &:focus-within {
-      outline: 2px solid var(--color-accent-dark);
-      outline-offset: 2px;
-    }
   }
 
   &__icon {
@@ -133,18 +161,22 @@ onMounted(async () => {
     border: 0;
     background: none;
     font: inherit;
-
-    &:focus-visible {
-      outline: none;
-    }
   }
 
-  &__filters {
+  &__filters{
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
     margin-top: var(--space-4);
+
+    div{
+      display: flex;
+      margin-left: auto;
+      margin-right: auto;
+      gap: var(--space-4);
+      align-items: center
+    }
   }
 
   select {
