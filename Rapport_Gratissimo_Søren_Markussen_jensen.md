@@ -27,10 +27,12 @@ hvor jeg mest brugte main / dev / feature
 
 
 ## Kodeelementernes oprindelse
+regex snippets: https://regex-snippets.com
 
 
 ## Særlige punkter
-
+Postman hævder at zipcode er optional men i API'et er det ikke, så vi skulle lave en extra input til register form
+da at zipcode/post nummer er required af API'en. 
 
 ## Vurdering af egen indsats
 

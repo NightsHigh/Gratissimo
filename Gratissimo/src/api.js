@@ -1,36 +1,142 @@
-export const BASE = import.meta.env.VITE_API_URL
+const API_BASE = import.meta.env.VITE_API_URL
 
-async function request(path, options = {}) {
-  const response = await fetch(`${BASE}/api${path}`, {
-    ...options,
-    headers: {
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-      ...options.headers
-    }
-  }).catch(() => {
-    throw new Error('Der er ingen forbindelse til serveren. Prøv igen om lidt.')
-  })
+const ACCESS_TOKEN = 'gratissimo_access'
+const REFRESH_TOKEN = 'gratissimo_refresh'
 
-  // Fejl fra API kommer som { error: "besked" }. Catch JSON parse fejl hvis der ikke er noget body.
-  // Tjek Issue 20 på kanban boardet
-  const body = await response.json().catch(() => null)
+// max-age counts in seconds, so 60 seconds * 60 minutes is one hour & refresh is 60 seconds * 60 minutes * 24 is 24 hours.
+const ACCESS_LIFETIME_IN_SECONDS = 60 * 60
+const REFRESH_LIFETIME_IN_SECONDS = 60 * 60 * 24
 
-    if (!response.ok) {
-      throw new Error(body?.error ?? `Serveren svarede med fejl ${response.status}.`)
-    }
+function readCookie(name) {
+  const cookies = document.cookie.split('; ')
 
-    return body
+  for (const cookie of cookies) {
+    const [key, value] = cookie.split('=')
+
+    if (key === name) return value
   }
 
-export const subscribeNewsletter = (email) =>
-  request('/newsletter', {
-    method: 'POST',
-    body: JSON.stringify({ email })
-  })
+  return ''
+}
 
-export const getTestimonies = () => request('/testimony')
+function saveCookie(name, value, lifetime) {
+  document.cookie = `${name}=${value}; path=/; max-age=${lifetime}`
+}
+
+function forgetCookie(name) {
+  document.cookie = `${name}=; path=/; max-age=0`
+}
+
+async function readBody(response) {
+  const contentType = response.headers.get('content-type') || ''
+
+  if (contentType.includes('application/json')) return response.json()
+
+  return response.text()
+}
+
+async function request(path, options = {}) {
+  const method = options.method || 'GET'
+  const body = options.body
+  const needsLogin = options.needsLogin || false
+
+  const settings = { method, headers: {} }
+
+  if (body) {
+    settings.headers['Content-Type'] = 'application/json'
+    settings.body = JSON.stringify(body)
+  }
+
+  if (needsLogin) {
+    const token = readCookie(ACCESS_TOKEN)
+
+    if (!token) throw new Error('Du skal være logget ind for at gøre det.')
+
+    settings.headers.Authorization = `Bearer ${token}`
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/api${path}`, settings)
+    const answer = await readBody(response)
+
+    // The API sends its own message as { error: "..." }, so use that when it is there.
+    if (!response.ok) {
+      throw new Error(answer?.error || `Gratissimo API'et fejlede på ${path} (HTTP ${response.status}).`)
+    }
+
+    return answer
+  } catch (error) {
+
+    // fetch kaster TypeError hvis requesten aldrig bliver sendt fx hvis at API'et er nede.
+    if (error instanceof TypeError) {
+      throw new Error(`Kunne ikke nå Gratissimo API'et på ${API_BASE}. Kører serveren?`)
+    }
+
+    else {
+      throw error
+    }
+  }
+}
+
+// Images live on /assets, which is outside /api, so they are built from API_BASE alone.
+export const imageUrl = (path) => (path ? `${API_BASE}${path}` : '')
+
+export async function login(email, password) {
+let session
+  try{
+    session = await request('/login', {
+    method: 'POST',
+    body: { username: email, password }
+  })
+  } catch (error) {
+    //Tjek error message om det er login error
+    if (error.message === 'Invalid credentials') {
+      throw new Error(`Forkert email eller password, skrev du det rigtigt?`)
+    }
+    throw error
+  }
+
+  saveCookie(ACCESS_TOKEN, session.accessToken, ACCESS_LIFETIME_IN_SECONDS)
+  saveCookie(REFRESH_TOKEN, session.refreshToken, REFRESH_LIFETIME_IN_SECONDS)
+
+  return session.user
+}
+
+export async function logout() {
+  const refreshToken = readCookie(REFRESH_TOKEN)
+
+  try {
+    // The API deletes the refresh token on its side, but we log out locally either way.
+    if (refreshToken) await request('/logout', { method: 'POST', body: { refreshToken } })
+  } catch {
+    // Ignored on purpose.
+  }
+
+  forgetCookie(ACCESS_TOKEN)
+  forgetCookie(REFRESH_TOKEN)
+}
+
+export async function verifySession() {
+  const users = await request('/users', { needsLogin: true })
+
+  // The API answers with an array holding the one user the token belongs to.
+  return users[0]
+}
+
+// Send exactly the fields the User model has. Extra fields make Prisma fail.
+export const createUser = (user) => request('/users', { method: 'POST', body: user })
+
+export const updateUser = (user) =>
+  request('/users', { method: 'PATCH', body: user, needsLogin: true })
 
 export const getArticles = () => request('/articles')
+export const getTestimonies = () => request('/testimony')
 
-// Fetch the images on localhost:4000${article.imageUrl} fx localhost:4000/assets/images/article4.jpg
-export const imageUrl = (path) => `${BASE}${path}`
+export const getJobListings = () => request('/job-listings')
+
+export const getRegions = () => request('/regions')
+export const getJobCategories = () => request('/job-categories')
+export const getWorkTypes = () => request('/workTypes') // camelCase, unlike the others
+
+export const subscribeNewsletter = (email) =>
+  request('/newsletter', { method: 'POST', body: { email } })
