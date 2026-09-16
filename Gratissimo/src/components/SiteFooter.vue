@@ -102,7 +102,7 @@ const social = [
     flex-wrap: wrap;
     justify-content: space-around;
     gap: var(--space-5);
-    max-width: var(--width-content);
+    max-width: var(--width-content-wide);
     margin: 0 auto;
   }
 
