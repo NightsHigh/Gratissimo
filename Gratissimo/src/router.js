@@ -11,7 +11,7 @@ import NotFoundPage from './pages/NotFoundPage.vue'
 export default createRouter({
   history: createWebHistory(),
   // Scroll to top when navigating to a new page
-  scrollBehavior: () => ({ top: 0 }),
+  scrollBehavior: () => ({ top: 0,  behavior: 'smooth'}),
   routes: [
     { path: '/', component: FrontPage },
     { path: '/jobs', component: JobSearchPage },
