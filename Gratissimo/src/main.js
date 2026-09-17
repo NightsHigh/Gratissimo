@@ -8,6 +8,6 @@ import './kit/tokens.scss'
 import './app.scss'
 
 // Get user again hvis a token is inside the cookie
-restoreSession()
+await restoreSession()
 
 createApp(App).use(router).mount('#app')
