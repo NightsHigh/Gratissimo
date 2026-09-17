@@ -23,7 +23,6 @@ export default createRouter({
     { path: '/opret-profil', component: AuthPage },
     { path: '/min-side', component: MyPage },
     { path: '/min-side/favoritter', component: MyPage },
-    { path: '/min-side/rediger', component: EditProfilePage },
     { path: '/:pathMatch(.*)*', component: NotFoundPage }
   ]
 })
