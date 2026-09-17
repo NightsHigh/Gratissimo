@@ -5,7 +5,6 @@ import NewsPage from './pages/NewsPage.vue'
 import CreateListingPage from './pages/CreateListingPage.vue'
 import AuthPage from './pages/AuthPage.vue'
 import MyPage from './pages/MyPage.vue'
-import EditProfilePage from './pages/EditProfilePage.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
 
 export default createRouter({
