@@ -29,7 +29,7 @@ hvor jeg mest brugte main / dev / feature
 ## Kodeelementernes oprindelse
 regex snippets: https://regex-snippets.com
 box shadow: https://getcssscan.com/css-box-shadow-examples
-
+Vue router: https://router.vuejs.org/guide/advanced/
 
 ## Særlige punkter
 Postman hævder at zipcode er optional men i API'et er det ikke, så vi skulle lave en extra input til register form
