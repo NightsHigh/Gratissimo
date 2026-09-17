@@ -61,7 +61,7 @@ const emit = defineEmits(['pageChange'])
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  margin: 0;
+  margin-bottom: 4rem;
   padding: 0.45rem 0.8rem;
   list-style: none;
   border: 1px solid #d8d1ce;
