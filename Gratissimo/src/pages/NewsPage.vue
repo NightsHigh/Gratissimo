@@ -34,7 +34,7 @@ const error = ref('')
 const randomId = ref(null) // Choose which random news to show to the user if they enter without an id in the search params
 
 
-// Vis en random news i toppen hvis brugeren går til siden uden et search :id param
+// Show a randoms news at the top if the user goes to the site without a search id param
 const article = computed(() => {
   const id = route.params.id ? Number(route.params.id) : randomId.value 
 
