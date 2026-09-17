@@ -179,7 +179,7 @@ async function submit() {
     } else {
       await signIn(email.value, password.value)
     }
-// TODO Add error catching on the vue router TODO
+
     router.push('/min-side')
   } catch (err) {
     error.value = err.message
