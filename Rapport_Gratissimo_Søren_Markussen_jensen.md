@@ -28,6 +28,7 @@ hvor jeg mest brugte main / dev / feature
 
 ## Kodeelementernes oprindelse
 regex snippets: https://regex-snippets.com
+box shadow: https://getcssscan.com/css-box-shadow-examples
 
 
 ## Særlige punkter

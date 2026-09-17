@@ -7,7 +7,7 @@ import '@fontsource/montserrat-alternates'
 import './kit/tokens.scss'
 import './app.scss'
 
-// Henter brugeren igen, hvis der ligger et token i cookien.
+// Get user again hvis a token is inside the cookie
 restoreSession()
 
 createApp(App).use(router).mount('#app')

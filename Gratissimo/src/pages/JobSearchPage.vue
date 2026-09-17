@@ -37,7 +37,6 @@
             <template v-if="isOpen(job)">
               <p>Arbejdstid: <strong>{{ job.workType?.type }}</strong></p>
               <p>Hjemmearbejde: <strong>{{ job.workHome }}</strong></p>
-              <p>Region: <strong>{{ job.region?.name }}</strong></p>
 
               <h4 class="job__contact">Kontakt</h4>
               <div class="job__combine">
@@ -107,14 +106,13 @@ const shortDate = (value) => {
   return `d. ${date.getDate()}/${date.getMonth() + 1}-${String(date.getFullYear()).slice(2)}`
 }
 
-// Periode-filteret regner baglaens fra i dag.
 function periodStart(periode) {
   if (!periode) return null
 
   const date = new Date()
   if (periode === 'uge') date.setDate(date.getDate() - 7)
-  if (periode === 'maaned') date.setMonth(date.getMonth() - 1)
-  if (periode === 'aar') date.setFullYear(date.getFullYear() - 1)
+  else if (periode === 'maaned') date.setMonth(date.getMonth() - 1)
+  else if (periode === 'aar') date.setFullYear(date.getFullYear() - 1)
 
   return date
 }
