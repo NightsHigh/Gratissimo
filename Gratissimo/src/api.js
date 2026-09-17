@@ -66,7 +66,7 @@ async function request(path, options = {}) {
     return answer
   } catch (error) {
 
-    // fetch kaster TypeError hvis requesten aldrig bliver sendt fx hvis at API'et er nede.
+    // fetch throws a TypeError if the request never got sent fx if the API is down
     if (error instanceof TypeError) {
       throw new Error(`Kunne ikke nå Gratissimo API'et på ${API_BASE}. Kører serveren?`)
     }
@@ -88,7 +88,7 @@ let session
     body: { username: email, password }
   })
   } catch (error) {
-    //Tjek error message om det er login error
+    // Check message if its message is about login error
     if (error.message === 'Invalid credentials') {
       throw new Error(`Forkert email eller password, skrev du det rigtigt?`)
     }
@@ -96,7 +96,7 @@ let session
   }
 
   
-  // Save the token in format: 
+  // Save the token in following format: 
   // ('Token_name_in_cookies', 'token we get from api after login', lifetime_for_the_token_in_seconds)
   saveCookie(ACCESS_TOKEN, session.accessToken, ACCESS_LIFETIME_IN_SECONDS)
   saveCookie(REFRESH_TOKEN, session.refreshToken, REFRESH_LIFETIME_IN_SECONDS)

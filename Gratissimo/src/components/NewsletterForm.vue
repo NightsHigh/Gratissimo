@@ -34,7 +34,7 @@ const tone = ref('info')
 const pending = ref(false)
 
 // Validate email for obvious mistakes
-const EmailRegex = (value) => /^(?!\.)(?!.*\.\.)(?!.*\.@)[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?!-)[a-zA-Z0-9-]+(?<!-)(?:\.[a-zA-Z0-9-]+(?<!-))*\.[a-zA-Z]{2,}$/.test(value)
+const EmailRegex = () => /^(?!\.)(?!.*\.\.)(?!.*\.@)[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?!-)[a-zA-Z0-9-]+(?<!-)(?:\.[a-zA-Z0-9-]+(?<!-))*\.[a-zA-Z]{2,}$/
 
 async function submit() {
   const value = email.value.trim()
@@ -45,7 +45,7 @@ async function submit() {
     return
   }
 
-  if (!EmailRegex(value)) {
+  if (!EmailRegex.test(value)) {
     tone.value = 'error'
     message.value = 'Det ligner ikke en gyldig email. Tjek den lige igen.'
     return
@@ -61,7 +61,7 @@ async function submit() {
     email.value = ''
   } catch (error) {
 
-    // omskriv fejlbesked til dansk fra api'ets engelske fejlbesked
+    // Rewrite error message to danish from the API english error message
     const alreadySubscribed = error.message === 'Email already exists'
     tone.value = alreadySubscribed ? 'info' : 'error'
     message.value = alreadySubscribed

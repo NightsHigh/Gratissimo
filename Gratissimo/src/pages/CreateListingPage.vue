@@ -129,7 +129,6 @@ const message = ref('')
 const messageTone = ref('info')
 const pending = ref(false)
 
-// API'et validerer ingenting, saa alt fanges her. Foerste fejl vinder.
 function validate() {
   if (!form.value.title.trim()) return 'Skriv en overskrift.'
   if (!form.value.organization.trim()) return 'Skriv navnet på din organisation eller forening.'
