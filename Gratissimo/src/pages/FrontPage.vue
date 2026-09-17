@@ -5,7 +5,7 @@
     </div>
 
     <CategoryOverview />
-    <FeaturedNews />
+    <FeaturedNews :limit="3"/>
     <TestimonivesSlider />
   </div>
 </template>

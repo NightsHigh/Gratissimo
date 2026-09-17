@@ -1,6 +1,6 @@
 <template>
   <section class="featured-news">
-    <h2>Udvalgte Nyheder</h2>
+    <h2>{{ title }}</h2>
 
     <AlertMessage v-if="error" tone="error">{{ error }}</AlertMessage>
 
@@ -28,10 +28,23 @@ import { onMounted, ref } from 'vue'
 import { AlertMessage, Card } from '@/kit'
 import { getArticles, imageUrl } from '@/api'
 
+const props = defineProps({
+  title: {
+    type: String,
+    default: 'Udvalgte Nyheder',
+  },
+  limit: {
+    type: Number,
+    default: null,
+  },
+})
+
 const articles = ref([])
 const error = ref('')
 
-// Designet viser datoen som "22/3".
+// Design shows the date as 22/3 so we return in "day/month" format
+// getMonth() returns with 0 as start array index so we plus 1 to show the human version of the month
+//  aka january is 0 for code but for humans its 1 
 const shortDate = (value) => {
   const date = new Date(value)
   return `${date.getDate()}/${date.getMonth() + 1}`
@@ -40,7 +53,14 @@ const shortDate = (value) => {
 onMounted(async () => {
   try {
     const allArticles = await getArticles()
-    articles.value = allArticles.sort(() => Math.random() - 0.5).slice(0, 3)
+
+    articles.value = props.limit
+ 
+      // Show the amount of randoms news that props.limit dictates
+      ? allArticles.sort(() => Math.random() - 0.5).slice(0, props.limit)
+      // Show all news with the newest as the first and then descend in the order they were created at
+      : allArticles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+
   } catch (err) {
     error.value = err.message
   }
@@ -81,6 +101,14 @@ onMounted(async () => {
 
   &__meta {
     color: var(--color-accent-dark);
+  }
+
+  @media (max-width: 40rem) {
+    padding: var(--space-5) var(--space-4);
+
+    &__list {
+      grid-template-columns: 1fr;
+    }
   }
 }
 </style>
