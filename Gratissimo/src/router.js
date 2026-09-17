@@ -8,7 +8,7 @@ import MyPage from './pages/MyPage.vue'
 import NotFoundPage from './pages/NotFoundPage.vue'
 import { isLoggedIn } from './auth'
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   // Scroll to top when navigating to a new page
   scrollBehavior: () => ({ top: 0,  behavior: 'smooth'}),
@@ -20,12 +20,12 @@ export default createRouter({
     { path: '/nyheder/:id', component: NewsPage},
     { path: '/log-ind', component: AuthPage},
     { path: '/opret-profil', component: AuthPage },
+    { path: '/opret-annonce', component: CreateListingPage },
 
     // Add vue router meta tag with requiresAuth so we can prevent people from accesing it
     // If they arent logged in
     { meta: { requiresAuth: true }, path: '/min-side', component: MyPage },
     { meta: { requiresAuth: true }, path: '/min-side/favoritter', component: MyPage },
-    { meta: { requiresAuth: true }, path: '/opret-annonce', component: CreateListingPage },
 
     { path: '/:pathMatch(.*)*', component: NotFoundPage }
   ]
@@ -43,3 +43,4 @@ router.beforeEach((to) => {
     return { path: '/log-ind' }
   }
 })
+export default router
