@@ -6,8 +6,40 @@
 
 ---
 
+### Kørsel af projektet:
 
-**Kørsel af projektet:** 
+git clone git@github.com:NightsHigh/Gratissimo.git
+
+cd Gratissimo
+
+
+#### API:
+
+``cd API``
+
+``cp .env.example .env``
+
+``npm install``
+
+``npm run migrate``
+
+``npm run generate ``
+
+``npm run dev``
+
+
+#### Frontend:
+I en ny terminal:
+``cd Gratissimo``
+Din terminal burde se sådan her ud nu: ``Gratissimo\Gratissimo> ``
+Så længe du er i Gratissimo -> Gratissimo
+Kan du køre de næste commands
+
+``npm install``
+
+``cp .env.example .env ``
+
+``npm run dev``
 
 ## Argumentation for mine valg
 
