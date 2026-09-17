@@ -7,6 +7,7 @@
         <RouterLink
           :to="isLoggedIn ? '/min-side' : '/opret-profil'"
           class="navbar__button navbar__opret-profil"
+          :class="{ 'navbar__button--active': $route.path.startsWith('/min-side') }"
         >
           {{ isLoggedIn ? 'Min side' : 'Opret profil' }}
         </RouterLink>
@@ -80,6 +81,11 @@ const navbarItems = [
     text-decoration: none;
     border: none;
   }
+
+
+  &__button--active {
+      text-decoration: underline;
+    }
 
   &__Login{
     padding-left: 0;
