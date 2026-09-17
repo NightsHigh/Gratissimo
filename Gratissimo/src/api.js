@@ -152,3 +152,6 @@ export const deleteFavorite = (favoriteId) =>
 
 export const createJobListing = (job) =>
   request('/job-listings', { method: 'POST', body: job, needsLogin: true })
+
+export const deleteJobListing = (id) =>
+  request(`/job-listings/${id}`, { method: 'DELETE', needsLogin: true })
