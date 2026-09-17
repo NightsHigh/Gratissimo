@@ -237,12 +237,19 @@ onMounted(async () => {
       color: var(--color-text);
       font-weight: 100;
     }
-
-    // a bit off on the color but works for now - 
-    // Make the select option aka 1st option of the select the same color as the other placeholders
-    select[id="regionId"], [id="jobCategoryId"], [id="workTypeId"], [id="workHome"], option:first-child {
+    
+    select:has(option[value='']:checked) {
       color: var(--color-text-faint);
       font-weight: 200;
+    }
+
+    option {
+      color: var(--color-text);
+      font-weight: 400;
+    }
+
+    option[value=''] {
+      color: var(--color-text-faint);
     }
   }
 
