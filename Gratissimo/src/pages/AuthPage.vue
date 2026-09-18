@@ -82,7 +82,7 @@
             <input
               id="zipcode"
               v-model="zipcode"
-              type="number"
+              type="text"
               placeholder="Skriv dit post nummer..."
             >
           </p>

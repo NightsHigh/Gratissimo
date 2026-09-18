@@ -14,7 +14,44 @@ Hovedopgaven er funktionelt komplet med minor styling choices missing, men alt f
 ---
 
 **Kørsel af projektet:**
+**Kørsel af projektet:**
 
+``git clone git@github.com:NightsHigh/Gratissimo.git``
+
+``cd Gratissimo``
+
+
+**API:**
+
+``cd API``
+
+``cp .env.example .env``
+
+``npm install``
+
+``npm run migrate``
+
+``npm run generate ``
+
+``npm run dev``
+
+
+**Frontend:**
+I en ny terminal:
+
+``cd Gratissimo``
+
+Din terminal burde se sådan her ud nu: ``Gratissimo\Gratissimo> ``
+
+Så længe du er i Gratissimo -> Gratissimo kan du køre de næste commands
+
+``npm install``
+
+``cp .env.example .env ``
+
+``npm run dev``
+
+---
 ``git clone git@github.com:NightsHigh/Gratissimo.git``
 
 ``cd Gratissimo``
@@ -58,6 +95,7 @@ Jeg nåede selve hovedopgaven og den valgfrie opgave, hvor jeg valgte pagination
 
 Jeg gjorde en stor indsats i version control og i at køre et kanban board. Det gjorde også, at jeg fik en del flere commits, men også vigtigere gav det mig kendskab til industri standarden med flow metoder som fx main og dev, men også fx hvad at prioritere i issues og coding, det kan ses på kanban board billederne i bilaget.
 
+**Med mere tid:**
 **Med mere tid:**
 
 Fix de resterende styling issues og få styr på noget mere af vue generelt, da jeg stadig er meget ny i Vue iforhold til React.
