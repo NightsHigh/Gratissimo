@@ -42,4 +42,13 @@ defineProps({
   font-weight: 600;
   text-decoration: underline;
 }
+
+@media (max-width: 700px) {
+  .tab-nav{
+
+    &__list{
+      margin-right: 3.25rem;
+    }
+  }
+}
 </style>
