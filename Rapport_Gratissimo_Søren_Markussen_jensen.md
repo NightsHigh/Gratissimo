@@ -20,7 +20,6 @@ Hovedopgaven er funktionelt komplet med minor styling choices missing, men alt f
 
 ``cd Gratissimo``
 
-
 **API:**
 
 ``cd API``
